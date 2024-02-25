@@ -95,7 +95,7 @@ class Chain {
 
         for(let i = 1; i < this.chain.length; i++){
             const block = this.chain[i];
-            const candidate = block.transaction.amount[1];
+            const candidate = block.transaction.amount;
             lead[candidate] = (lead[candidate] || 0) + 1;
         }
         
@@ -109,7 +109,7 @@ class Chain {
             }
         }
 
-        return winner;
+        return {winner};
     }
 }
 exports.Chain = Chain;

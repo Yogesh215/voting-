@@ -8,11 +8,11 @@ const { Chain, Transaction, Block, Wallet } = require('./driver');
 
 const votedVoters = new Set(); // Set to store voted voters
 const candidates = []; // Array to store the list of candidates
-
 app.post('/addCandidate', (req, res) => {
   const { candidateName } = req.body;
+  const candidateWallet = new Wallet();
   if (candidateName && !candidates.includes(candidateName)) {
-    candidates.push(candidateName);
+    candidates[candidateName] = {'public_key':candidateWallet.publicKey,'private_key':candidateWallet.privateKey};
     res.status(200).json({ message: 'Candidate added successfully.' });
   } else {
     res.status(400).json({ error: 'Invalid candidate name or candidate already exists.' });
@@ -36,7 +36,6 @@ app.get('/checkVote/:voterId', (req, res) => {
 app.post('/', (req, res) => {
   const { voterId, selectedCandidate } = req.body;
   const WalletInstance = new Wallet();
-  const payeePublicKey = WalletInstance.publicKey;
 
   // Check if the voter has already voted
   if (votedVoters.has(voterId)) {
@@ -46,7 +45,8 @@ app.post('/', (req, res) => {
     console.log(`${voterId} has voted for ${selectedCandidate}`);
     votedVoters.add(voterId); // Add the voter to the voted set
 
-    WalletInstance.sendMoney([voterId, selectedCandidate], payeePublicKey)
+    WalletInstance.sendMoney(selectedCandidate, candidates[selectedCandidate].public_key);
+
     res.sendStatus(200);
   }
 });
@@ -64,8 +64,8 @@ app.get('/instance', (req, res) => {
 });
 
 app.get('/checkLead', (req, res) => {
-  const winner = Chain.instance.checkLead();
-  res.send(winner)
+  const {winner} = Chain.instance.checkLead();
+  res.send({winner})
 });
 
 app.listen(port, () => console.log('server running on ', port));

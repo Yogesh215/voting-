@@ -7,6 +7,7 @@ function App() {
   const [candidates, setCandidates] = useState([]);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const [voteStatus, setVoteStatus] = useState('');
+  const [winner, setWinner] = useState('');
 
   useEffect(() => {
     // Fetch the list of candidates from the server
@@ -54,6 +55,7 @@ function App() {
   const checkLead = async function () {
     const temp = await fetch('http://localhost:5000/checkLead');
     const result = await temp.json();
+    setWinner(result.winner);
     console.log(result);
   }
   
@@ -107,6 +109,7 @@ function App() {
         <button type="button" className="btn btn-success" onClick={addCandidate}>Add Candidate</button>
       </div>
       {voteStatus && <p style={{ marginTop: '10px', color: 'green' }}>{voteStatus}</p>}
+      {winner && <p style={{ marginTop: '10px', color: 'green' }}>{winner} is the winner</p>}
     </div>
   );
 }
