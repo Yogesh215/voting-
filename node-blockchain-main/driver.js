@@ -89,27 +89,22 @@ class Chain {
             this.chain.push(newBlock);
         }
     }
-
-    checkLead(){
+    checkLead() {
         const lead = {};
-
-        for(let i = 1; i < this.chain.length; i++){
+        for (let i = 1; i < this.chain.length; i++) {
             const block = this.chain[i];
             const candidate = block.transaction.amount;
             lead[candidate] = (lead[candidate] || 0) + 1;
         }
-        
         let winner = null;
         let maxVotes = 0;
-
         for (const [candidate, votes] of Object.entries(lead)) {
             if (votes > maxVotes) {
                 winner = candidate;
                 maxVotes = votes;
             }
         }
-
-        return {winner};
+        return { winner };
     }
 }
 exports.Chain = Chain;

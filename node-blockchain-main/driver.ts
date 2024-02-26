@@ -87,6 +87,28 @@ class Chain {
     }
   }
 
+  checkLead(){
+    const lead: { [key: number]: any } = {};
+
+    for(let i = 1; i < this.chain.length; i++){
+      const block = this.chain[i];
+      const candidate = block.transaction.amount;
+      lead[candidate] = (lead[candidate] || 0) + 1;
+    }
+    
+    let winner = null;
+    let maxVotes = 0;
+
+    for (const [candidate, votes] of Object.entries(lead)) {
+        if (votes > maxVotes) {
+            winner = candidate;
+            maxVotes = votes;
+        }
+    }
+
+    return {winner};
+    }
+
 }
 
 // Wallet gives a user a public/private keypair
